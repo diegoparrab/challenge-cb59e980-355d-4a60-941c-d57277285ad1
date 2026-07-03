@@ -4,3 +4,5 @@ export {
   type BiometricCapability,
   createBiometricCapability,
 } from './biometric-capability';
+
+export { type PromptConfig, type BiometricAuthResult } from './biometric-auth';
