@@ -19,4 +19,4 @@ Teach developers how biometric hardware works (Face ID, Touch ID, Android finger
 
 ## Context
 
-This is a Pragma training challenge (junior-l3 level). The backend is simulated — but server-side security properties (challenge lifecycle, replay defense) are still implemented because they are the core learning objective.
+This is a Pragma training challenge (advanced-l2 level). The backend is simulated — but server-side security properties (challenge lifecycle, replay defense) are still implemented because they are the core learning objective.

@@ -107,8 +107,8 @@ Implement the full vertical slice for biometric hardware capability detection fo
 - [x] 6. Checkpoint — Data layer verified
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 7. Wire DI container
-  - [ ] 7.1 Register biometric dependencies in DI container
+- [x] 7. Wire DI container
+  - [x] 7.1 Register biometric dependencies in DI container
     - Update `src/di/container.ts`
     - Instantiate `BiometricDatasource` as singleton
     - Instantiate `BiometricRepositoryImpl` with datasource as singleton
@@ -116,8 +116,8 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Export `checkBiometricCapabilityUseCase` on the container object
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 8. Implement presentation layer
-  - [ ] 8.1 Create useBiometricCapability hook
+- [x] 8. Implement presentation layer
+  - [x] 8.1 Create useBiometricCapability hook
     - Create `src/presentation/features/biometrics/hooks/useBiometricCapability.ts`
     - Define `BiometricCapabilityState` interface with `capability`, `loading`, `error`, `platformInfo` fields
     - Implement `detect` callback using `container.checkBiometricCapabilityUseCase.execute()`
@@ -126,7 +126,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Use `Platform.OS` and `Platform.Version` for platform info
     - _Requirements: 8.2, 11.1, 13.3_
 
-  - [ ] 8.2 Create SensorCard component
+  - [x] 8.2 Create SensorCard component
     - Create `src/presentation/features/biometrics/components/SensorCard.tsx`
     - Accept `BiometricCapability` as prop
     - Display sensor icon, display name, and status message based on `reason`
@@ -135,7 +135,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Use only React Native primitives (View, Text, StyleSheet)
     - _Requirements: 7.1, 7.2, 7.3, 11.1_
 
-  - [ ] 8.3 Create ReDetectButton component
+  - [x] 8.3 Create ReDetectButton component
     - Create `src/presentation/features/biometrics/components/ReDetectButton.tsx`
     - Accept `onPress` and `loading` props
     - Show `ActivityIndicator` when loading, "Volver a detectar" text otherwise
@@ -143,7 +143,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Use only React Native primitives (TouchableOpacity, Text, ActivityIndicator, StyleSheet)
     - _Requirements: 8.1, 8.2, 8.3, 11.1_
 
-  - [ ] 8.4 Create ExplanationPanel component
+  - [x] 8.4 Create ExplanationPanel component
     - Create `src/presentation/features/biometrics/components/ExplanationPanel.tsx`
     - Accept `BiometricCapability` as prop
     - Display platform-specific API name (`LAContext.canEvaluatePolicy` on iOS, `BiometricManager.canAuthenticate` on Android)
@@ -151,14 +151,14 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Use only React Native primitives (View, Text, StyleSheet, Platform)
     - _Requirements: 9.1, 9.2, 11.1_
 
-  - [ ] 8.5 Create DeviceInfoCard component
+  - [x] 8.5 Create DeviceInfoCard component
     - Create `src/presentation/features/biometrics/components/DeviceInfoCard.tsx`
     - Accept `platform`, `osVersion`, and optional `securityLevel` props
     - Display platform name, OS version, and security level when available
     - Use only React Native primitives (View, Text, StyleSheet)
     - _Requirements: 10.1, 10.2, 11.1_
 
-  - [ ] 8.6 Create HardwareInspectorScreen
+  - [x] 8.6 Create HardwareInspectorScreen
     - Create `src/presentation/features/biometrics/screens/HardwareInspectorScreen.tsx`
     - Compose `SensorCard`, `ReDetectButton`, `ExplanationPanel`, `DeviceInfoCard` using `useBiometricCapability` hook
     - Show loading indicator during initial detection
@@ -181,14 +181,14 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Render screen with each capability state and assert ReDetectButton is present in the tree
     - **Validates: Requirements 8.1**
 
-- [ ] 9. Wire screen in App.tsx
-  - [ ] 9.1 Render HardwareInspectorScreen from App.tsx
+- [x] 9. Wire screen in App.tsx
+  - [x] 9.1 Render HardwareInspectorScreen from App.tsx
     - Import `HardwareInspectorScreen` in `App.tsx`
     - Render it directly (no navigation required)
     - Wrap with `SafeAreaProvider` if not already present
     - _Requirements: 11.2_
 
-- [ ] 10. Final checkpoint — Full feature verified
+- [x] 10. Final checkpoint — Full feature verified
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

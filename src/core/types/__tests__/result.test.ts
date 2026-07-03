@@ -53,7 +53,6 @@ describe('Result', () => {
     it('narrows type after isOk check', () => {
       const result: Result<string, AppError> = ok('hello');
       if (isOk(result)) {
-        // TypeScript should know result.value is string here
         expect(result.value.toUpperCase()).toBe('HELLO');
       }
     });
@@ -63,7 +62,6 @@ describe('Result', () => {
         new AppError('NETWORK_ERROR', 'connection failed'),
       );
       if (isErr(result)) {
-        // TypeScript should know result.error is AppError here
         expect(result.error.code).toBe('NETWORK_ERROR');
       }
     });
