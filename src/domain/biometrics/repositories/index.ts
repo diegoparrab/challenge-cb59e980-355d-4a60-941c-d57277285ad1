@@ -1,0 +1,1 @@
+export type { BiometricRepository } from './biometric.repository';

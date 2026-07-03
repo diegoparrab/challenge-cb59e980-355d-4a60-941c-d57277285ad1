@@ -14,8 +14,8 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Run `pod install` in `ios/` directory
     - _Requirements: 4.1, 4.2_
 
-- [-] 2. Implement domain layer
-  - [ ] 2.1 Create BiometricCapability entity with factory function
+- [x] 2. Implement domain layer
+  - [x] 2.1 Create BiometricCapability entity with factory function
     - Create `src/domain/biometrics/entities/biometric-capability.ts`
     - Define `BiometryType` union type: `'FaceID' | 'TouchID' | 'Fingerprint' | 'Face' | 'Iris' | 'Unknown'`
     - Define `CapabilityReason` type: `'NO_HARDWARE' | 'NOT_ENROLLED' | 'AVAILABLE'`
@@ -24,14 +24,14 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Export barrel index at `src/domain/biometrics/entities/index.ts`
     - _Requirements: 1.1, 1.2, 1.3_
 
-  - [ ] 2.2 Create BiometricRepository interface
+  - [x] 2.2 Create BiometricRepository interface
     - Create `src/domain/biometrics/repositories/biometric.repository.ts`
     - Declare `BiometricRepository` interface with `checkCapability(): Promise<Result<BiometricCapability, AppError>>`
     - Import `Result` from `@core/types/result` and `AppError` from `@core/errors/app-error`
     - Export barrel index at `src/domain/biometrics/repositories/index.ts`
     - _Requirements: 2.1, 2.2_
 
-  - [ ] 2.3 Create CheckBiometricCapabilityUseCase
+  - [x] 2.3 Create CheckBiometricCapabilityUseCase
     - Create `src/domain/biometrics/usecases/check-biometric-capability.ts`
     - Implement class with constructor receiving `BiometricRepository` interface
     - Implement `execute()` method that delegates to `repository.checkCapability()`
@@ -45,8 +45,8 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Generate all combinations of reason × biometryType (including null) and assert invariant holds
     - **Validates: Requirements 1.3**
 
-- [ ] 3. Domain layer unit tests
-  - [ ] 3.1 Write unit tests for CheckBiometricCapabilityUseCase
+- [x] 3. Domain layer unit tests
+  - [x] 3.1 Write unit tests for CheckBiometricCapabilityUseCase
     - Create `src/domain/biometrics/usecases/__tests__/check-biometric-capability.test.ts`
     - Implement `FakeBiometricRepository` implementing `BiometricRepository` interface with configurable result
     - Test: repository returns AVAILABLE with FaceID → use case forwards correctly
@@ -64,7 +64,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Generate random AppError codes and messages, assert use case propagates them unchanged
     - **Validates: Requirements 3.4, 5.4**
 
-- [ ] 4. Checkpoint — Domain layer verified
+- [x] 4. Checkpoint — Domain layer verified
   - Ensure all tests pass, ask the user if questions arise.
 
 - [ ] 5. Implement data layer
