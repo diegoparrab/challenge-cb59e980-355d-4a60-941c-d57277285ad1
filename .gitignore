@@ -94,3 +94,4 @@ src/presentation/features/biometrics/screens/.gitkeep
 src/presentation/navigation/.gitkeep
 src/presentation/shared/components/.gitkeep
 src/presentation/shared/hooks/.gitkeep
+docs/reports/

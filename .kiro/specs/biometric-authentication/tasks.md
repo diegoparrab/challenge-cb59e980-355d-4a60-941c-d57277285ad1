@@ -42,40 +42,40 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - For any PromptConfig where capability is available, verify the use case maps the repository's authenticate response faithfully (ok→ok, err→err)
     - **Validates: Requirements 1.3, 1.4**
 
-- [-] 2. Data layer extensions
-  - [~] 2.1 Add authenticate method to BiometricDatasource
+- [x] 2. Data layer extensions
+  - [x] 2.1 Add authenticate method to BiometricDatasource
     - Extend `src/data/biometrics/datasources/biometric.datasource.ts` with `authenticate(config: PromptConfig)` method
     - Call `this.rnBiometrics.simplePrompt()` with title and cancelLabel from config
     - Wrap result in `Result<BiometricAuthResult, AppError>`
     - _Requirements: 1.2, 1.3, 1.4_
 
-  - [~] 2.2 Add authenticate method to BiometricRepositoryImpl
+  - [x] 2.2 Add authenticate method to BiometricRepositoryImpl
     - Extend `src/data/biometrics/repositories/biometric.repository.impl.ts` with `authenticate()` that delegates to datasource
     - _Requirements: 1.2_
 
-- [ ] 3. DI container update
-  - [~] 3.1 Register AuthenticateWithBiometricsUseCase in container
+- [x] 3. DI container update
+  - [x] 3.1 Register AuthenticateWithBiometricsUseCase in container
     - Update `src/di/container.ts` to instantiate and export `authenticateWithBiometricsUseCase`
     - _Requirements: 1.1_
 
-- [~] 4. Checkpoint - Domain and data layer complete
+- [x] 4. Checkpoint - Domain and data layer complete
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Navigation setup with React Navigation
-  - [~] 5.1 Install navigation dependencies and configure
+- [-] 5. Navigation setup with React Navigation
+  - [ ] 5.1 Install navigation dependencies and configure
     - Install `@react-navigation/native`, `@react-navigation/native-stack`, `react-native-screens`
     - Run `pod install` for iOS native linking
     - Update `babel.config.js` if any resolver changes are needed
     - _Requirements: 4.1, 4.5_
 
-  - [~] 5.2 Create navigation types and AppNavigator with native-stack
+  - [ ] 5.2 Create navigation types and AppNavigator with native-stack
     - Create `src/presentation/navigation/types.ts` with `RootStackParamList` (Login, Home)
     - Replace `src/presentation/navigation/AppNavigator.tsx` with `NavigationContainer` + native-stack navigator
     - Set Login as initial route, headerShown false
     - _Requirements: 4.1, 4.2, 4.5_
 
 - [ ] 6. Presentation layer — hook and screens
-  - [~] 6.1 Create useBiometricLogin hook with state machine
+  - [ ] 6.1 Create useBiometricLogin hook with state machine
     - Create `src/presentation/features/auth/hooks/useBiometricLogin.ts`
     - Implement `AuthStatus` type: `'idle' | 'authenticating' | 'success' | 'failed'`
     - Preload capability on mount via `CheckBiometricCapabilityUseCase`
@@ -99,7 +99,7 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - For any scenario reaching failed state, verify `reset()` then `login()` transitions through the full cycle without stale state
     - **Validates: Requirements 6.1, 6.3**
 
-  - [~] 6.5 Create LoginScreen with navigation
+  - [ ] 6.5 Create LoginScreen with navigation
     - Create `src/presentation/features/auth/screens/LoginScreen.tsx`
     - Use `useBiometricLogin` hook for state
     - Navigate to Home via `navigation.replace('Home')` on success
@@ -107,13 +107,13 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - Compose `BiometricButton` and `EventFeedback` components
     - _Requirements: 2.1, 2.5, 4.3, 5.4_
 
-  - [~] 6.6 Create HomeScreen with logout
+  - [ ] 6.6 Create HomeScreen with logout
     - Create `src/presentation/features/auth/screens/HomeScreen.tsx`
     - Display simulated account info
     - Logout button resets navigation state via `CommonActions.reset`
     - _Requirements: 4.4_
 
-  - [~] 6.7 Create BiometricButton component
+  - [ ] 6.7 Create BiometricButton component
     - Create `src/presentation/features/auth/components/BiometricButton.tsx`
     - Disabled state when `capability.available === false` or status is authenticating
     - Label adapts to biometryType (Face ID vs fingerprint)
@@ -121,7 +121,7 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - Accessibility: `accessibilityRole="button"`, `accessibilityState`
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [~] 6.8 Create EventFeedback component
+  - [ ] 6.8 Create EventFeedback component
     - Create `src/presentation/features/auth/components/EventFeedback.tsx`
     - Render messages based on AuthStatus: authenticating, success, failed
     - Return null for idle
@@ -129,7 +129,7 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 6.2_
 
 - [ ] 7. Integration and wiring
-  - [~] 7.1 Update App.tsx to use new AppNavigator
+  - [ ] 7.1 Update App.tsx to use new AppNavigator
     - Ensure `App.tsx` wraps `<AppNavigator />` inside `<SafeAreaProvider>` (or `<NavigationContainer>` if needed)
     - Remove any old useState-based routing references
     - _Requirements: 4.5_
@@ -149,7 +149,7 @@ Extend the existing Clean Architecture biometric detection (spec 02) with full a
     - Test disabled states, labels per biometryType, messages per status
     - _Requirements: 2.2, 2.3, 2.4, 5.1, 5.2, 5.3_
 
-- [~] 8. Final checkpoint - Ensure all tests pass
+- [ ] 8. Final checkpoint - Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

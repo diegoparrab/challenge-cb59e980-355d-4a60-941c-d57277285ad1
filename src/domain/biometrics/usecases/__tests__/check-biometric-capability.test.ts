@@ -6,6 +6,10 @@ import {
 } from '@domain/biometrics/entities/biometric-capability';
 import { Result, ok, err, isOk, isErr } from '@core/types/result';
 import { AppError } from '@core/errors/app-error';
+import {
+  PromptConfig,
+  BiometricAuthResult,
+} from '@domain/biometrics/entities/biometric-auth';
 
 class FakeBiometricRepository implements BiometricRepository {
   private result: Result<BiometricCapability, AppError>;
@@ -20,6 +24,12 @@ class FakeBiometricRepository implements BiometricRepository {
 
   async checkCapability(): Promise<Result<BiometricCapability, AppError>> {
     return this.result;
+  }
+
+  async authenticate(
+    _config: PromptConfig,
+  ): Promise<Result<BiometricAuthResult, AppError>> {
+    return ok({ success: true });
   }
 }
 
