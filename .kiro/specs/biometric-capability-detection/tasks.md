@@ -67,8 +67,8 @@ Implement the full vertical slice for biometric hardware capability detection fo
 - [x] 4. Checkpoint — Domain layer verified
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 5. Implement data layer
-  - [ ] 5.1 Create BiometricDatasource
+- [x] 5. Implement data layer
+  - [x] 5.1 Create BiometricDatasource
     - Create `src/data/biometrics/datasources/biometric.datasource.ts`
     - Import `ReactNativeBiometrics` from `react-native-biometrics` (ONLY import point in project)
     - Implement `checkCapability()` that calls `rnBiometrics.isSensorAvailable()`
@@ -79,7 +79,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Implement `mapBiometryType()` private method: 'FaceID'→'FaceID', 'TouchID'→'TouchID', 'Biometrics'→'Fingerprint', default→'Unknown'
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6_
 
-  - [ ] 5.2 Create BiometricRepositoryImpl
+  - [x] 5.2 Create BiometricRepositoryImpl
     - Create `src/data/biometrics/repositories/biometric.repository.impl.ts`
     - Implement `BiometricRepository` interface
     - Constructor receives `BiometricDatasource`
