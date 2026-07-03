@@ -6,6 +6,10 @@ import {
   BiometryType,
   createBiometricCapability,
 } from '@domain/biometrics/entities/biometric-capability';
+import {
+  PromptConfig,
+  BiometricAuthResult,
+} from '@domain/biometrics/entities/biometric-auth';
 
 export class BiometricDatasource {
   private rnBiometrics: ReactNativeBiometrics;
@@ -45,6 +49,23 @@ export class BiometricDatasource {
           'Failed to check biometric capability',
           e,
         ),
+      );
+    }
+  }
+
+  async authenticate(
+    config: PromptConfig,
+  ): Promise<Result<BiometricAuthResult, AppError>> {
+    try {
+      const { success } = await this.rnBiometrics.simplePrompt({
+        promptMessage: config.title,
+        cancelButtonText: config.cancelLabel,
+      });
+
+      return ok({ success });
+    } catch (e: unknown) {
+      return err(
+        new AppError('BIOMETRIC_NOT_AVAILABLE', 'Biometric prompt failed', e),
       );
     }
   }
