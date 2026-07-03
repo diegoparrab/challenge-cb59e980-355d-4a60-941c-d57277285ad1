@@ -1,35 +1,97 @@
-import React from 'react';
-import {Text, TouchableOpacity, StyleSheet, View} from 'react-native';
-import {AuthLayout} from '@presentation/shared/components/AuthLayout';
-import {colors, spacing, typography} from '@presentation/shared/theme';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '@presentation/navigation/types';
+import { AuthLayout } from '@presentation/shared/components/AuthLayout';
+import { Toast, ToastVariant } from '@presentation/shared/components/Toast';
+import { colors, spacing, typography } from '@presentation/shared/theme';
+import { useBiometricLogin } from '../hooks/useBiometricLogin';
+import { BiometricButton } from '../components/BiometricButton';
+import { EventFeedback } from '../components/EventFeedback';
 
-interface Props {
-  onLoginSuccess: () => void;
-}
+type LoginNav = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
-export function LoginScreen({onLoginSuccess}: Props) {
+const SUCCESS_TOAST_DURATION = 1500;
+const FAILURE_TOAST_DURATION = 3000;
+
+export function LoginScreen() {
+  const navigation = useNavigation<LoginNav>();
+  const { status, capability, login, reset } = useBiometricLogin();
+
+  const [toast, setToast] = useState<{
+    visible: boolean;
+    message: string;
+    variant: ToastVariant;
+    duration: number;
+  }>({ visible: false, message: '', variant: 'info', duration: 2500 });
+
+  useEffect(() => {
+    if (status === 'success') {
+      setToast({
+        visible: true,
+        message: 'Autenticación exitosa',
+        variant: 'success',
+        duration: SUCCESS_TOAST_DURATION,
+      });
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 'failed') {
+      setToast({
+        visible: true,
+        message: 'No se completó la autenticación. Intenta de nuevo.',
+        variant: 'error',
+        duration: FAILURE_TOAST_DURATION,
+      });
+    }
+  }, [status]);
+
+  const handleToastHide = useCallback(() => {
+    setToast(prev => ({ ...prev, visible: false }));
+    if (status === 'success') {
+      navigation.replace('Home');
+    } else if (status === 'failed') {
+      reset();
+    }
+  }, [status, navigation, reset]);
+
   return (
-    <AuthLayout>
-      <View style={styles.logoContainer}>
-        <Text style={styles.logo}>🔐</Text>
-        <Text style={styles.title}>Biometrics Auth</Text>
-        <Text style={styles.subtitle}>
-          Autenticación biométrica segura
-        </Text>
-      </View>
+    <View style={styles.root}>
+      <Toast
+        visible={toast.visible}
+        message={toast.message}
+        variant={toast.variant}
+        duration={toast.duration}
+        onHide={handleToastHide}
+      />
+      <AuthLayout>
+        <View style={styles.logoContainer}>
+          <Text style={styles.logo}>🔐</Text>
+          <Text style={styles.title}>Biometrics Auth</Text>
+          <Text style={styles.subtitle}>
+            Autenticación biométrica segura
+          </Text>
+        </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={onLoginSuccess}
-        accessibilityRole="button"
-        accessibilityLabel="Iniciar sesión">
-        <Text style={styles.buttonText}>Iniciar sesión</Text>
-      </TouchableOpacity>
-    </AuthLayout>
+        <View style={styles.actionContainer}>
+          <BiometricButton
+            capability={capability}
+            status={status}
+            onPress={login}
+          />
+          <EventFeedback status={status} />
+        </View>
+      </AuthLayout>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
   logoContainer: {
     alignItems: 'center',
     marginBottom: spacing.xxl,
@@ -48,17 +110,9 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  button: {
-    backgroundColor: colors.primary,
-    paddingVertical: 14,
-    paddingHorizontal: spacing.xl,
-    borderRadius: 10,
+  actionContainer: {
     width: '100%',
     alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
+    gap: spacing.md,
   },
 });
