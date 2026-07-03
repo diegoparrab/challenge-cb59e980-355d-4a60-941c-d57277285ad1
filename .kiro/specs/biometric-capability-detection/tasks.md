@@ -86,7 +86,7 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - `checkCapability()` delegates to `datasource.checkCapability()`
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ]* 5.3 Write datasource tests with mocked native module
+  - [x] 5.3 Write datasource tests with mocked native module
     - Create `src/data/biometrics/datasources/__tests__/biometric.datasource.test.ts`
     - Jest mock `react-native-biometrics` module
     - Test: native returns `{ available: true, biometryType: 'FaceID' }` → maps to AVAILABLE/FaceID
@@ -104,10 +104,10 @@ Implement the full vertical slice for biometric hardware capability detection fo
     - Mock native module to throw various error types (Error, TypeError, string, null), assert datasource always returns err Result
     - **Validates: Requirements 4.6**
 
-- [ ] 6. Checkpoint — Data layer verified
+- [x] 6. Checkpoint — Data layer verified
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Wire DI container
+- [-] 7. Wire DI container
   - [ ] 7.1 Register biometric dependencies in DI container
     - Update `src/di/container.ts`
     - Instantiate `BiometricDatasource` as singleton
