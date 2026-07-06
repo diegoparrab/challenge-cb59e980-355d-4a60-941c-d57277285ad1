@@ -110,20 +110,20 @@ Integrates biometric authentication with a simulated credential-based authentica
     - Map key invalidation errors to `BIOMETRIC_KEY_INVALIDATED` AppError code
     - _Requirements: 5.3, 5.4, 5.6, 8.1, 11.2_
 
-- [ ] 8. Repository implementations
-  - [~] 8.1 Implement AuthRepositoryImpl
+- [x] 8. Repository implementations
+  - [x] 8.1 Implement AuthRepositoryImpl
     - Create `src/data/auth/repositories/auth.repository.impl.ts`
     - Depends on `FakeAuthBackend` and `SecureStorageDatasource`
     - Implement `loginWithCredentials`, `logout`, `getSession`, `persistSession`
     - _Requirements: 1.1, 1.2, 1.3, 6.1, 6.5_
 
-  - [~] 8.2 Implement BiometricKeysRepositoryImpl
+  - [x] 8.2 Implement BiometricKeysRepositoryImpl
     - Create `src/data/biometrics/repositories/biometric-keys.repository.impl.ts`
     - Delegates to `BiometricKeysDatasource`
     - Update barrel export
     - _Requirements: 2.2, 3.3, 7.1, 11.4_
 
-  - [~] 8.3 Implement BiometricEnrollmentRepositoryImpl
+  - [x] 8.3 Implement BiometricEnrollmentRepositoryImpl
     - Create `src/data/auth/repositories/biometric-enrollment.repository.impl.ts`
     - Depends on `BiometricKeysRepository` (domain interface), `FakeAuthBackend`, `SecureStorageDatasource`
     - Implement `enroll`, `isEnrolled`, `loginWithBiometrics` (challenge→signature→verify flow), `unenroll`, `getPublicKey`, `isEnrollmentRejected`, `rejectEnrollment`, `clearRejection`
@@ -131,38 +131,38 @@ Integrates biometric authentication with a simulated credential-based authentica
     - No cross-feature data imports (uses domain interface for biometrics)
     - _Requirements: 2.2, 2.3, 2.4, 3.1, 3.2, 3.3, 3.4, 3.5, 7.1, 7.2, 7.4, 8.1, 8.2, 11.3, 11.5_
 
-- [ ] 9. Use cases
-  - [~] 9.1 Implement LoginWithCredentialsUseCase
+- [x] 9. Use cases
+  - [x] 9.1 Implement LoginWithCredentialsUseCase
     - Create `src/domain/auth/usecases/login-with-credentials.ts`
     - Calls `authRepository.loginWithCredentials` then `persistSession` on success
     - _Requirements: 1.1, 1.2_
 
-  - [~] 9.2 Implement EnrollBiometricsUseCase
+  - [x] 9.2 Implement EnrollBiometricsUseCase
     - Create `src/domain/auth/usecases/enroll-biometrics.ts`
     - Delegates to `enrollmentRepository.enroll(userId)`
     - _Requirements: 2.2, 2.3_
 
-  - [~] 9.3 Implement LoginWithBiometricsUseCase
+  - [x] 9.3 Implement LoginWithBiometricsUseCase
     - Create `src/domain/auth/usecases/login-with-biometrics.ts`
     - Calls `enrollmentRepository.loginWithBiometrics` then `authRepository.persistSession` on success
     - _Requirements: 3.2, 3.3, 3.4_
 
-  - [~] 9.4 Implement DisableBiometricsUseCase
+  - [x] 9.4 Implement DisableBiometricsUseCase
     - Create `src/domain/auth/usecases/disable-biometrics.ts`
     - Delegates to `enrollmentRepository.unenroll()`
     - _Requirements: 7.1, 7.2_
 
-  - [~] 9.5 Implement LogoutUseCase
+  - [x] 9.5 Implement LogoutUseCase
     - Create `src/domain/auth/usecases/logout.ts`
     - Calls `authRepository.logout()`
     - _Requirements: 6.1, 6.2_
 
-  - [~] 9.6 Implement GetSessionStateUseCase
+  - [x] 9.6 Implement GetSessionStateUseCase
     - Create `src/domain/auth/usecases/get-session-state.ts`
     - Calls `authRepository.getSession()`
     - _Requirements: 6.5, 9.1, 9.2_
 
-  - [~] 9.7 Create barrel export for auth use cases
+  - [x] 9.7 Create barrel export for auth use cases
     - Create `src/domain/auth/usecases/index.ts`
     - _Requirements: 11.1_
 
@@ -207,8 +207,8 @@ Integrates biometric authentication with a simulated credential-based authentica
 - [~] 10. Checkpoint — Domain and data layers
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. DI container wiring
-  - [~] 11.1 Wire authentication dependencies in container.ts
+- [x] 11. DI container wiring
+  - [x] 11.1 Wire authentication dependencies in container.ts
     - Instantiate `BiometricKeysDatasource`, `FakeAuthBackend`, `SecureStorageDatasource`
     - Instantiate `BiometricKeysRepositoryImpl`, `AuthRepositoryImpl`, `BiometricEnrollmentRepositoryImpl`
     - Instantiate all auth use cases: `LoginWithCredentialsUseCase`, `EnrollBiometricsUseCase`, `LoginWithBiometricsUseCase`, `DisableBiometricsUseCase`, `LogoutUseCase`, `GetSessionStateUseCase`
