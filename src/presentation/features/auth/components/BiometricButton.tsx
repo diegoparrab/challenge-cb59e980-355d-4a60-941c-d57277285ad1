@@ -14,10 +14,11 @@ interface Props {
   capability: BiometricCapability | null;
   status: AuthStatus;
   onPress: () => void;
+  disabled?: boolean;
 }
 
-export function BiometricButton({ capability, status, onPress }: Props) {
-  const isDisabled = !capability?.available || status === 'authenticating';
+export function BiometricButton({ capability, status, onPress, disabled }: Props) {
+  const isDisabled = disabled || !capability?.available || status === 'authenticating';
   const label = getButtonLabel(capability);
 
   return (

@@ -5,6 +5,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '@presentation/navigation/types';
 import { AuthLayout } from '@presentation/shared/components/AuthLayout';
 import { Toast, ToastVariant } from '@presentation/shared/components/Toast';
+import { BiometricErrorBanner } from '@presentation/shared/components/BiometricErrorBanner';
 import { colors, spacing, typography } from '@presentation/shared/theme';
 import { useBiometricLogin } from '../hooks/useBiometricLogin';
 import { BiometricButton } from '../components/BiometricButton';
@@ -13,11 +14,17 @@ import { EventFeedback } from '../components/EventFeedback';
 type LoginNav = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 const SUCCESS_TOAST_DURATION = 1500;
-const FAILURE_TOAST_DURATION = 3000;
 
 export function LoginScreen() {
   const navigation = useNavigation<LoginNav>();
-  const { status, capability, login, reset } = useBiometricLogin();
+  const {
+    status,
+    capability,
+    biometricError,
+    biometricDisabled,
+    login,
+    clearError,
+  } = useBiometricLogin();
 
   const [toast, setToast] = useState<{
     visible: boolean;
@@ -37,25 +44,12 @@ export function LoginScreen() {
     }
   }, [status]);
 
-  useEffect(() => {
-    if (status === 'failed') {
-      setToast({
-        visible: true,
-        message: 'No se completó la autenticación. Intenta de nuevo.',
-        variant: 'error',
-        duration: FAILURE_TOAST_DURATION,
-      });
-    }
-  }, [status]);
-
   const handleToastHide = useCallback(() => {
     setToast(prev => ({ ...prev, visible: false }));
     if (status === 'success') {
       navigation.replace('Home');
-    } else if (status === 'failed') {
-      reset();
     }
-  }, [status, navigation, reset]);
+  }, [status, navigation]);
 
   return (
     <View style={styles.root}>
@@ -80,10 +74,17 @@ export function LoginScreen() {
             capability={capability}
             status={status}
             onPress={login}
+            disabled={biometricDisabled}
           />
           <EventFeedback status={status} />
         </View>
       </AuthLayout>
+      <BiometricErrorBanner
+        error={biometricError}
+        onRetry={login}
+        onEnroll={() => {}}
+        onDismiss={clearError}
+      />
     </View>
   );
 }
