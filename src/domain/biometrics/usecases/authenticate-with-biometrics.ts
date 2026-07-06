@@ -1,27 +1,68 @@
 import { Result, err } from '@core/types/result';
-import { AppError } from '@core/errors/app-error';
+import {
+  BiometricError,
+  createBiometricError,
+} from '../entities/biometric-error';
 import { BiometricAuthResult, PromptConfig } from '../entities/biometric-auth';
 import { BiometricRepository } from '../repositories/biometric.repository';
 
+export interface AuthenticationState {
+  readonly biometricDisabled: boolean;
+}
+
 export class AuthenticateWithBiometricsUseCase {
+  private state: AuthenticationState = {
+    biometricDisabled: false,
+  };
+
   constructor(private readonly repository: BiometricRepository) {}
 
-  async execute(config: PromptConfig): Promise<Result<BiometricAuthResult, AppError>> {
+  getState(): AuthenticationState {
+    return { ...this.state };
+  }
+
+  resetState(): void {
+    this.state = {
+      biometricDisabled: false,
+    };
+  }
+
+  async execute(
+    config: PromptConfig,
+  ): Promise<Result<BiometricAuthResult, BiometricError>> {
     const capabilityResult = await this.repository.checkCapability();
 
     if (capabilityResult.kind === 'err') {
-      return capabilityResult;
+      return err(createBiometricError('UNKNOWN', undefined));
     }
 
-    if (!capabilityResult.value.available) {
-      return err(
-        new AppError(
-          'BIOMETRIC_NOT_AVAILABLE',
-          `Biometric not available: ${capabilityResult.value.reason}`,
-        ),
-      );
+    const capability = capabilityResult.value;
+    if (!capability.available) {
+      const code =
+        capability.reason === 'NOT_ENROLLED' ? 'NOT_ENROLLED' : 'NO_HARDWARE';
+      return err(createBiometricError(code, undefined));
     }
 
-    return this.repository.authenticate(config);
+    const authResult = await this.repository.authenticate(config);
+
+    if (authResult.kind === 'ok') {
+      return authResult;
+    }
+
+    return this.handleError(authResult.error);
+  }
+
+  private handleError(
+    error: BiometricError,
+  ): Result<BiometricAuthResult, BiometricError> {
+    switch (error.code) {
+      case 'LOCKOUT':
+        this.state = { ...this.state, biometricDisabled: true };
+        return err(error);
+
+      case 'USER_CANCELLED':
+      default:
+        return err(error);
+    }
   }
 }

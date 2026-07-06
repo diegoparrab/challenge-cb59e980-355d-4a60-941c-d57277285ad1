@@ -57,4 +57,5 @@ cd ios && pod install
 
 - **Prettier**: single quotes, trailing commas (all), no parens on single-arg arrows
 - **ESLint**: extends `@react-native` config with `boundaries` plugin for layer enforcement
+- **No inline comments**: no usar comentarios dentro del código (ni `//` ni `/* */` inline). El código debe ser autoexplicativo. Si se necesita documentar comportamiento complejo, hacerlo en la spec o en docs.
 - Tests use Jest with `@react-native/jest-preset`
