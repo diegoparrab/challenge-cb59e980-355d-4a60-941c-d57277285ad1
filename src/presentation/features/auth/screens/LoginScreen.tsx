@@ -1,65 +1,33 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '@presentation/navigation/types';
-import { AuthLayout } from '@presentation/shared/components/AuthLayout';
-import { Toast, ToastVariant } from '@presentation/shared/components/Toast';
-import { BiometricErrorBanner } from '@presentation/shared/components/BiometricErrorBanner';
-import { colors, spacing, typography } from '@presentation/shared/theme';
-import { useBiometricLogin } from '../hooks/useBiometricLogin';
-import { BiometricButton } from '../components/BiometricButton';
-import { EventFeedback } from '../components/EventFeedback';
-
-type LoginNav = NativeStackNavigationProp<RootStackParamList, 'Login'>;
-
-const SUCCESS_TOAST_DURATION = 1500;
+import React, {useCallback, useState} from 'react';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {AuthLayout} from '@presentation/shared/components/AuthLayout';
+import {colors, spacing, typography} from '@presentation/shared/theme';
+import {useAuth} from '../hooks/useAuth';
+import {useSession} from '../hooks/useSession';
+import {isOk} from '@core/types/result';
 
 export function LoginScreen() {
-  const navigation = useNavigation<LoginNav>();
-  const {
-    status,
-    capability,
-    biometricError,
-    biometricDisabled,
-    login,
-    clearError,
-  } = useBiometricLogin();
+  const {login, loginWithBiometrics, isEnrolled, isLoading, error} = useAuth();
+  const {setSession} = useSession();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
-  const [toast, setToast] = useState<{
-    visible: boolean;
-    message: string;
-    variant: ToastVariant;
-    duration: number;
-  }>({ visible: false, message: '', variant: 'info', duration: 2500 });
-
-  useEffect(() => {
-    if (status === 'success') {
-      setToast({
-        visible: true,
-        message: 'Autenticación exitosa',
-        variant: 'success',
-        duration: SUCCESS_TOAST_DURATION,
-      });
+  const handleCredentialLogin = useCallback(async () => {
+    const result = await login({username, password});
+    if (isOk(result)) {
+      setSession(result.value);
     }
-  }, [status]);
+  }, [login, username, password, setSession]);
 
-  const handleToastHide = useCallback(() => {
-    setToast(prev => ({ ...prev, visible: false }));
-    if (status === 'success') {
-      navigation.replace('Home');
+  const handleBiometricLogin = useCallback(async () => {
+    const result = await loginWithBiometrics();
+    if (isOk(result)) {
+      setSession(result.value);
     }
-  }, [status, navigation]);
+  }, [loginWithBiometrics, setSession]);
 
   return (
     <View style={styles.root}>
-      <Toast
-        visible={toast.visible}
-        message={toast.message}
-        variant={toast.variant}
-        duration={toast.duration}
-        onHide={handleToastHide}
-      />
       <AuthLayout>
         <View style={styles.logoContainer}>
           <Text style={styles.logo}>🔐</Text>
@@ -69,22 +37,54 @@ export function LoginScreen() {
           </Text>
         </View>
 
-        <View style={styles.actionContainer}>
-          <BiometricButton
-            capability={capability}
-            status={status}
-            onPress={login}
-            disabled={biometricDisabled}
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Usuario"
+            placeholderTextColor={colors.textSecondary}
+            value={username}
+            onChangeText={setUsername}
+            autoCapitalize="none"
+            autoCorrect={false}
+            accessibilityLabel="Usuario"
           />
-          <EventFeedback status={status} />
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            placeholderTextColor={colors.textSecondary}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            accessibilityLabel="Contraseña"
+          />
+
+          {error && (
+            <Text style={styles.errorText}>{error.message}</Text>
+          )}
+
+          <TouchableOpacity
+            style={[styles.button, isLoading && styles.buttonDisabled]}
+            onPress={handleCredentialLogin}
+            disabled={isLoading}
+            accessibilityRole="button"
+            accessibilityLabel="Iniciar sesión">
+            <Text style={styles.buttonText}>
+              {isLoading ? 'Ingresando...' : 'Iniciar sesión'}
+            </Text>
+          </TouchableOpacity>
+
+          {isEnrolled && (
+            <TouchableOpacity
+              style={[styles.biometricButton, isLoading && styles.buttonDisabled]}
+              onPress={handleBiometricLogin}
+              disabled={isLoading}
+              accessibilityRole="button"
+              accessibilityLabel="Ingresar con biometría">
+              <Text style={styles.biometricButtonText}>🔑 Ingresar con biometría</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </AuthLayout>
-      <BiometricErrorBanner
-        error={biometricError}
-        onRetry={login}
-        onEnroll={() => {}}
-        onDismiss={clearError}
-      />
     </View>
   );
 }
@@ -111,9 +111,49 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
     textAlign: 'center',
   },
-  actionContainer: {
+  formContainer: {
     width: '100%',
-    alignItems: 'center',
     gap: spacing.md,
+  },
+  input: {
+    ...typography.body,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    color: colors.text,
+    backgroundColor: colors.background,
+  },
+  errorText: {
+    ...typography.caption,
+    color: colors.error,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    ...typography.body,
+    color: '#FFFFFF',
+    fontWeight: '600',
+  },
+  biometricButton: {
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderRadius: 8,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  biometricButtonText: {
+    ...typography.body,
+    color: colors.primary,
+    fontWeight: '600',
   },
 });

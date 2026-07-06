@@ -216,21 +216,21 @@ Integrates biometric authentication with a simulated credential-based authentica
     - Preserve existing biometric capability exports
     - _Requirements: 11.3, 11.5_
 
-- [ ] 12. Presentation — hooks and session management
-  - [~] 12.1 Implement useSession hook
+- [x] 12. Presentation — hooks and session management
+  - [x] 12.1 Implement useSession hook
     - Create `src/presentation/features/auth/hooks/useSession.ts`
     - On mount: call `GetSessionStateUseCase` to restore persisted session
     - Expose: `session`, `isLoading`, `setSession`, `clearSession`
     - Use React state (or context) to drive navigation conditional rendering
     - _Requirements: 6.5, 9.1, 9.2, 9.4_
 
-  - [~] 12.2 Implement useAuth hook
+  - [x] 12.2 Implement useAuth hook
     - Create `src/presentation/features/auth/hooks/useAuth.ts`
     - Expose: `login(credentials)`, `loginWithBiometrics()`, `logout()`, `enrollBiometrics(userId)`, `disableBiometrics()`, `isEnrolled`, `isRejected`, `isLoading`, `error`
     - Wire to use cases from DI container
     - _Requirements: 1.1, 2.1, 3.1, 6.1, 7.1_
 
-- [ ] 13. Presentation — Navigation
+- [x] 13. Presentation — Navigation
   - [~] 13.1 Implement conditional AppNavigator with auth/app stacks
     - Modify `src/presentation/navigation/AppNavigator.tsx`
     - Use `useSession` hook to drive conditional rendering
@@ -240,8 +240,8 @@ Integrates biometric authentication with a simulated credential-based authentica
     - No imperative navigation calls — React reconciliation handles transitions
     - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 14. Presentation — Screens
-  - [~] 14.1 Implement LoginScreen
+- [x] 14. Presentation — Screens
+  - [x] 14.1 Implement LoginScreen
     - Create `src/presentation/features/auth/screens/LoginScreen.tsx`
     - Credential form: username + password TextInputs
     - Login button (credential-based)
@@ -249,7 +249,7 @@ Integrates biometric authentication with a simulated credential-based authentica
     - Error display using existing error patterns
     - _Requirements: 1.1, 1.2, 3.1, 3.7_
 
-  - [~] 14.2 Implement EnrollmentModal component
+  - [x] 14.2 Implement EnrollmentModal component
     - Create `src/presentation/features/auth/components/EnrollmentModal.tsx`
     - React Native Modal; visible after first credential login when not enrolled and not rejected
     - Accept button: triggers `EnrollBiometricsUseCase`
@@ -257,7 +257,7 @@ Integrates biometric authentication with a simulated credential-based authentica
     - Error and loading states
     - _Requirements: 2.1, 2.4, 2.5, 2.6_
 
-  - [~] 14.3 Implement HomeScreen with Settings section
+  - [x] 14.3 Implement HomeScreen with Settings section
     - Create `src/presentation/features/auth/screens/HomeScreen.tsx`
     - Display session info (userId, method, issuedAt)
     - Biometric toggle (enable/disable)
@@ -266,7 +266,7 @@ Integrates biometric authentication with a simulated credential-based authentica
     - Logout button
     - _Requirements: 6.1, 6.2, 6.3, 6.4, 7.1, 7.3, 10.5_
 
-  - [~] 14.4 Extend Hardware Inspector with Signature Flow panel
+  - [x] 14.4 Extend Hardware Inspector with Signature Flow panel
     - Add panel to existing biometrics Hardware Inspector
     - Display: last challenge nonce, signature (truncated), verification result (success/failure + reason)
     - Display security level from react-native-keychain via SecureStorageDatasource
@@ -276,8 +276,8 @@ Integrates biometric authentication with a simulated credential-based authentica
 - [~] 15. Checkpoint — Presentation layer
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 16. Integration and final wiring
-  - [~] 16.1 Wire App.tsx to use AppNavigator with session provider
+- [x] 16. Integration and final wiring
+  - [x] 16.1 Wire App.tsx to use AppNavigator with session provider
     - Update `App.tsx` to render `AppNavigator` with `NavigationContainer`
     - Ensure session context wraps the navigation tree
     - _Requirements: 9.1, 9.4_

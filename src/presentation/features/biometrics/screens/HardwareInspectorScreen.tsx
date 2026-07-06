@@ -11,6 +11,7 @@ import {useBiometricCapability} from '../hooks/useBiometricCapability';
 import {SensorCard} from '../components/SensorCard';
 import {ReDetectButton} from '../components/ReDetectButton';
 import {ExplanationPanel} from '../components/ExplanationPanel';
+import {SignatureFlowPanel} from '../components/SignatureFlowPanel';
 import {DeviceInfoCard} from '../components/DeviceInfoCard';
 
 export function HardwareInspectorScreen() {
@@ -43,6 +44,8 @@ export function HardwareInspectorScreen() {
       <ReDetectButton onPress={redetect} loading={loading} />
 
       {capability && <ExplanationPanel capability={capability} />}
+
+      <SignatureFlowPanel />
 
       <DeviceInfoCard
         platform={Platform.OS}

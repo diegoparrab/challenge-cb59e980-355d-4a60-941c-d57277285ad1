@@ -55,7 +55,7 @@ const disableBiometricsUseCase = new DisableBiometricsUseCase(
 const logoutUseCase = new LogoutUseCase(authRepository);
 const getSessionStateUseCase = new GetSessionStateUseCase(authRepository);
 
-export { fakeAuthBackend };
+export { fakeAuthBackend, secureStorageDatasource };
 
 export const container = {
   checkBiometricCapabilityUseCase,
@@ -66,4 +66,5 @@ export const container = {
   disableBiometricsUseCase,
   logoutUseCase,
   getSessionStateUseCase,
+  biometricEnrollmentRepository,
 } as const;

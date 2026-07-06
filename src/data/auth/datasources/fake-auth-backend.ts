@@ -1,9 +1,9 @@
+import 'react-native-get-random-values';
+import {v4 as uuidv4} from 'uuid';
 import {AppError} from '@core/errors/app-error';
 import {Result, ok, err} from '@core/types/result';
 import {AuthSession, AuthMethod} from '@domain/auth/entities/auth-session';
 import {Challenge} from '@domain/auth/entities/challenge';
-
-declare const crypto: {randomUUID: () => string};
 
 export interface SignatureFlowRecord {
   readonly challenge: string;
@@ -62,17 +62,16 @@ export class FakeAuthBackend {
 
     const session: AuthSession = {
       userId: user.userId,
-      token: crypto.randomUUID(),
+      token: uuidv4(),
       issuedAt: this.clock(),
       method: 'PASSWORD' as AuthMethod,
     };
-
     return ok(session);
   }
 
   issueChallenge(userId: string): Result<Challenge, AppError> {
     const now = this.clock();
-    const nonce = crypto.randomUUID();
+    const nonce = uuidv4();
     const expiresAt = now + FakeAuthBackend.CHALLENGE_TTL_MS;
 
     const storedChallenge: StoredChallenge = {
@@ -155,7 +154,7 @@ export class FakeAuthBackend {
 
     const session: AuthSession = {
       userId,
-      token: crypto.randomUUID(),
+      token: uuidv4(),
       issuedAt: this.clock(),
       method: 'BIOMETRIC' as AuthMethod,
     };
