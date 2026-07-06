@@ -2,7 +2,7 @@ import {useState, useEffect, useCallback} from 'react';
 import {Result, isOk, isErr} from '@core/types/result';
 import {AppError} from '@core/errors/app-error';
 import {AuthSession, Credentials} from '@domain/auth/entities';
-import {container} from '@di/container';
+import {container, secureStorageDatasource} from '@di/container';
 
 export interface UseAuthResult {
   login: (credentials: Credentials) => Promise<Result<AuthSession, AppError>>;
@@ -11,14 +11,18 @@ export interface UseAuthResult {
   enrollBiometrics: (userId: string) => Promise<Result<string, AppError>>;
   disableBiometrics: () => Promise<Result<void, AppError>>;
   isEnrolled: boolean;
+  isEnrolledForCurrentUser: boolean;
   isRejected: boolean;
+  isRejectedForCurrentUser: boolean;
   isLoading: boolean;
   error: AppError | null;
 }
 
-export function useAuth(): UseAuthResult {
+export function useAuth(currentUserId?: string): UseAuthResult {
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isEnrolledForCurrentUser, setIsEnrolledForCurrentUser] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
+  const [isRejectedForCurrentUser, setIsRejectedForCurrentUser] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<AppError | null>(null);
 
@@ -29,12 +33,27 @@ export function useAuth(): UseAuthResult {
       setIsEnrolled(enrolledResult.value);
     }
 
+    if (currentUserId) {
+      const flagResult = await secureStorageDatasource.getEnrollmentFlag();
+      if (isOk(flagResult)) {
+        setIsEnrolledForCurrentUser(flagResult.value === currentUserId);
+      }
+
+      const rejectionResult = await secureStorageDatasource.getRejectionFlag();
+      if (isOk(rejectionResult)) {
+        setIsRejectedForCurrentUser(rejectionResult.value === currentUserId);
+      }
+    } else {
+      setIsEnrolledForCurrentUser(false);
+      setIsRejectedForCurrentUser(false);
+    }
+
     const rejectedResult =
       await container.biometricEnrollmentRepository.isEnrollmentRejected();
     if (isOk(rejectedResult)) {
       setIsRejected(rejectedResult.value);
     }
-  }, []);
+  }, [currentUserId]);
 
   useEffect(() => {
     refreshEnrollmentStatus();
@@ -132,7 +151,9 @@ export function useAuth(): UseAuthResult {
     enrollBiometrics,
     disableBiometrics,
     isEnrolled,
+    isEnrolledForCurrentUser,
     isRejected,
+    isRejectedForCurrentUser,
     isLoading,
     error,
   };

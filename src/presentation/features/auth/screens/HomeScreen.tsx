@@ -6,7 +6,7 @@ import {AboutScreen} from '@presentation/features/auth/screens/AboutScreen';
 import {SettingsScreen} from '@presentation/features/auth/screens/SettingsScreen';
 import {HardwareInspectorScreen} from '@presentation/features/biometrics/screens/HardwareInspectorScreen';
 import {EnrollmentModal} from '../components/EnrollmentModal';
-import {container} from '@di/container';
+import {secureStorageDatasource} from '@di/container';
 import {useAuth} from '../hooks/useAuth';
 import {useSession} from '../hooks/useSession';
 
@@ -30,21 +30,22 @@ function getTitle(tab: string): string {
 }
 
 export function HomeScreen() {
+  const {session, clearSession} = useSession();
   const {
     logout,
     enrollBiometrics,
     disableBiometrics,
     isEnrolled,
-    isRejected,
+    isEnrolledForCurrentUser,
+    isRejectedForCurrentUser,
     isLoading,
     error,
-  } = useAuth();
-  const {session, clearSession} = useSession();
+  } = useAuth(session?.userId);
   const [activeTab, setActiveTab] = useState(tabs[0].key);
   const [showEnrollmentModal, setShowEnrollmentModal] = useState(true);
 
   const enrollmentVisible =
-    showEnrollmentModal && !isEnrolled && !isRejected && session !== null;
+    showEnrollmentModal && !isEnrolled && !isRejectedForCurrentUser && session !== null;
 
   const handleLogout = useCallback(async () => {
     await logout();
@@ -79,9 +80,11 @@ export function HomeScreen() {
   }, [enrollBiometrics, session]);
 
   const handleEnrollDecline = useCallback(async () => {
-    await container.biometricEnrollmentRepository.rejectEnrollment();
+    if (session) {
+      await secureStorageDatasource.storeRejectionFlag(session.userId);
+    }
     setShowEnrollmentModal(false);
-  }, []);
+  }, [session]);
 
   const content = useMemo(() => {
     switch (activeTab) {
@@ -93,7 +96,7 @@ export function HomeScreen() {
         return (
           <SettingsScreen
             session={session}
-            isEnrolled={isEnrolled}
+            isEnrolled={isEnrolledForCurrentUser}
             isLoading={isLoading}
             onEnrollBiometrics={handleEnrollFromSettings}
             onDisableBiometrics={handleDisableBiometrics}
@@ -106,7 +109,7 @@ export function HomeScreen() {
   }, [
     activeTab,
     session,
-    isEnrolled,
+    isEnrolledForCurrentUser,
     isLoading,
     handleEnrollFromSettings,
     handleDisableBiometrics,

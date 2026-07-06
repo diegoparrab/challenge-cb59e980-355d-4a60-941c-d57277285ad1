@@ -24,7 +24,6 @@ export class SecureStorageDatasource {
       await Keychain.setGenericPassword('session', serialized, {
         service: SERVICE_SESSION,
         accessible: SecureStorageDatasource.CONFIG.accessible,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       return ok(undefined);
     } catch (e: unknown) {
@@ -38,7 +37,6 @@ export class SecureStorageDatasource {
     try {
       const credentials = await Keychain.getGenericPassword({
         service: SERVICE_SESSION,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       if (!credentials) {
         return ok(null);
@@ -68,7 +66,6 @@ export class SecureStorageDatasource {
       await Keychain.setGenericPassword('enrollment', userId, {
         service: SERVICE_ENROLLMENT,
         accessible: SecureStorageDatasource.CONFIG.accessible,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       return ok(undefined);
     } catch (e: unknown) {
@@ -82,7 +79,6 @@ export class SecureStorageDatasource {
     try {
       const credentials = await Keychain.getGenericPassword({
         service: SERVICE_ENROLLMENT,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       if (!credentials) {
         return ok(null);
@@ -111,7 +107,6 @@ export class SecureStorageDatasource {
       await Keychain.setGenericPassword('rejection', userId, {
         service: SERVICE_REJECTION,
         accessible: SecureStorageDatasource.CONFIG.accessible,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       return ok(undefined);
     } catch (e: unknown) {
@@ -125,7 +120,6 @@ export class SecureStorageDatasource {
     try {
       const credentials = await Keychain.getGenericPassword({
         service: SERVICE_REJECTION,
-        accessControl: SecureStorageDatasource.CONFIG.accessControl,
       });
       if (!credentials) {
         return ok(null);

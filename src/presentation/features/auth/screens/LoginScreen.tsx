@@ -1,10 +1,11 @@
 import React, {useCallback, useState} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
 import {AuthLayout} from '@presentation/shared/components/AuthLayout';
 import {colors, spacing, typography} from '@presentation/shared/theme';
 import {useAuth} from '../hooks/useAuth';
 import {useSession} from '../hooks/useSession';
 import {isOk} from '@core/types/result';
+import {secureStorageDatasource} from '@di/container';
 
 export function LoginScreen() {
   const {login, loginWithBiometrics, isEnrolled, isLoading, error} = useAuth();
@@ -25,6 +26,13 @@ export function LoginScreen() {
       setSession(result.value);
     }
   }, [loginWithBiometrics, setSession]);
+
+  const handleClearStorage = useCallback(async () => {
+    await secureStorageDatasource.clearSession();
+    await secureStorageDatasource.clearEnrollmentFlag();
+    await secureStorageDatasource.clearRejectionFlag();
+    Alert.alert('Storage limpiado', 'Sesión, enrollment y rejection eliminados');
+  }, []);
 
   return (
     <View style={styles.root}>
@@ -83,6 +91,14 @@ export function LoginScreen() {
               <Text style={styles.biometricButtonText}>🔑 Ingresar con biometría</Text>
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={handleClearStorage}
+            accessibilityRole="button"
+            accessibilityLabel="Limpiar storage">
+            <Text style={styles.clearButtonText}>🗑️ Limpiar storage</Text>
+          </TouchableOpacity>
         </View>
       </AuthLayout>
     </View>
@@ -155,5 +171,17 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.primary,
     fontWeight: '600',
+  },
+  clearButton: {
+    borderWidth: 1,
+    borderColor: colors.error,
+    borderRadius: 8,
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    marginTop: spacing.lg,
+  },
+  clearButtonText: {
+    ...typography.caption,
+    color: colors.error,
   },
 });
