@@ -10,6 +10,11 @@ import {
   PromptConfig,
   BiometricAuthResult,
 } from '@domain/biometrics/entities/biometric-auth';
+import {
+  BiometricError,
+  createBiometricError,
+} from '@domain/biometrics/entities/biometric-error';
+import { mapNativeError } from './native-error-mapper';
 
 export class BiometricDatasource {
   private rnBiometrics: ReactNativeBiometrics;
@@ -55,18 +60,23 @@ export class BiometricDatasource {
 
   async authenticate(
     config: PromptConfig,
-  ): Promise<Result<BiometricAuthResult, AppError>> {
+  ): Promise<Result<BiometricAuthResult, BiometricError>> {
     try {
-      const { success } = await this.rnBiometrics.simplePrompt({
+      const { success, error } = await this.rnBiometrics.simplePrompt({
         promptMessage: config.title,
         cancelButtonText: config.cancelLabel,
       });
 
-      return ok({ success });
+      if (success) {
+        return ok({ success: true });
+      }
+
+      const code = mapNativeError(error);
+      return err(createBiometricError(code, error ?? undefined));
     } catch (e: unknown) {
-      return err(
-        new AppError('BIOMETRIC_NOT_AVAILABLE', 'Biometric prompt failed', e),
-      );
+      const errorString = e instanceof Error ? e.message : String(e);
+      const code = mapNativeError(errorString);
+      return err(createBiometricError(code, errorString));
     }
   }
 

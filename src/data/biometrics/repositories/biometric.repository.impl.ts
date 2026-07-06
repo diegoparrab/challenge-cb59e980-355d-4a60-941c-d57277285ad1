@@ -5,6 +5,7 @@ import {
   PromptConfig,
   BiometricAuthResult,
 } from '@domain/biometrics/entities/biometric-auth';
+import { BiometricError } from '@domain/biometrics/entities/biometric-error';
 import { BiometricRepository } from '@domain/biometrics/repositories/biometric.repository';
 import { BiometricDatasource } from '../datasources/biometric.datasource';
 
@@ -17,7 +18,7 @@ export class BiometricRepositoryImpl implements BiometricRepository {
 
   authenticate(
     config: PromptConfig,
-  ): Promise<Result<BiometricAuthResult, AppError>> {
+  ): Promise<Result<BiometricAuthResult, BiometricError>> {
     return this.datasource.authenticate(config);
   }
 }
